@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  scans     Scan[]
+
+  @@map("users")
+}
+
+model Scan {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [email])
+  patientId        String?
+  patient          Patient? @relation(fields: [patientId], references: [id])
+  originalImage    String
+  segmentationMask String
+  tumorType        String
+  confidence       Float
+  hasTumor         Boolean
+  processingTime   Float?
+  originalPath     String?
+  maskPath         String?
+  imageUrl         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("scans")
+  @@index([createdAt])
+}
+
+model Analytics {
+  id                String   @id @default(cuid())
+  date              DateTime @default(now())
+  totalScans        Int      @default(0)
+  tumorDetections   Int      @default(0)
+  avgConfidence     Float    @default(0)
+  avgProcessingTime Float    @default(0)
+  tumorDistribution String   // Store as JSON string
+  accuracy          Float    @default(0)
+
+  @@map("analytics")
+}
+
+model Patient {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  age       Int
+  status    String   @default("Healthy")
+  scanCount Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  scans     Scan[]
+
+  @@map("patients")
+}
