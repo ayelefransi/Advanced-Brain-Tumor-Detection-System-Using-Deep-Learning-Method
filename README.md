@@ -1,7 +1,3 @@
-Thanks for clarifying! You want the **README** to also describe that your system has a **front-end (Next.js)** and **back-ends (Flask for ML models, Node.js for APIs/services)**, not just the two notebooks.
-
-Here’s a **refined professional README** integrating that architecture:
-
 ---
 
 # Brain Tumor Detection System
